@@ -1,0 +1,6 @@
+include_directories(BEFORE ${CjyxExecutionModel_INCLUDE_DIRS})
+
+set(CMAKE_MODULE_PATH ${CjyxExecutionModel_CMAKE_DIR} ${CMAKE_MODULE_PATH})
+
+include(SEMMacroBuildCLI)
+include(SEMFunctionAddExecutable)

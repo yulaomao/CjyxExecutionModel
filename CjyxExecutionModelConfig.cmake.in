@@ -1,0 +1,205 @@
+#
+# Typical usage could be something like:
+#
+#   find_package(CjyxExecutionModel REQUIRED)
+#   include(${CjyxExecutionModel_USE_FILE})
+#
+#   SEMMacroBuildCLI(...)
+##
+# When using the components argument, CjyxExecutionModel_USE_* variables are
+# automatically set for the CjyxExecutionModel_USE_FILE to pick up.
+# If one wishes to manually set them, the available ones to set include:
+#                    CjyxExecutionModel_USE_GENERATECLP
+#                    CjyxExecutionModel_USE_MODULEDESCRIPTIONPARSER
+#                    CjyxExecutionModel_USE_TCLAP
+#                    CjyxExecutionModel_USE_JSONCPP
+#                    CjyxExecutionModel_USE_SERIALIZER
+
+# Check if components where passed to find_package()
+if(CjyxExecutionModel_FIND_COMPONENTS)
+  foreach(component ${CjyxExecutionModel_FIND_COMPONENTS})
+    string(TOUPPER ${component} _COMPONENT)
+    set(CjyxExecutionModel_USE_${_COMPONENT} 1)
+  endforeach()
+endif()
+
+# If no components are passed, let's assume all components built by default are expected to be enabled.
+if(NOT CjyxExecutionModel_FIND_COMPONENTS)
+  set(CjyxExecutionModel_USE_GENERATECLP 1)
+  set(CjyxExecutionModel_USE_MODULEDESCRIPTIONPARSER 1)
+  set(CjyxExecutionModel_USE_TCLAP 1)
+endif()
+
+# CjyxExecutionModel_USE_JSONCPP is optional and it must be turned on at
+# build time.
+set(CjyxExecutionModel_BUILD_WITH_JSONCPP "@CjyxExecutionModel_USE_JSONCPP@")
+if(CjyxExecutionModel_USE_JSONCPP AND NOT CjyxExecutionModel_BUILD_WITH_JSONCPP)
+  message(SEND_ERROR "The JSONCPP COMPONENT for CjyxExecutionModel was requested,
+  but CjyxExecutionModel was not built with CjyxExecutionModel_USE_JSONCPP ON.")
+endif()
+set(CjyxExecutionModel_USE_JSONCPP ${CjyxExecutionModel_BUILD_WITH_JSONCPP})
+
+# CjyxExecutionModel_USE_SERIALIZER is optional and it must be turned on at
+# build time. It also depends on CjyxExecutionModel_USE_JSONCPP.
+set(CjyxExecutionModel_BUILD_WITH_SERIALIZER "@CjyxExecutionModel_USE_SERIALIZER@")
+if(CjyxExecutionModel_USE_SERIALIZER AND NOT CjyxExecutionModel_BUILD_WITH_SERIALIZER)
+  message(SEND_ERROR "The SERIALIZER COMPONENT for CjyxExecutionModel was requested,
+  but CjyxExecutionModel was not built with CjyxExecutionModel_USE_SERIALIZER ON.")
+endif()
+set(CjyxExecutionModel_USE_SERIALIZER ${CjyxExecutionModel_BUILD_WITH_SERIALIZER})
+if(CjyxExecutionModel_USE_SERIALIZER AND NOT CjyxExecutionModel_USE_JSONCPP)
+  message(SEND_ERROR "The SERIALIZER COMPONENT for CjyxExecutionModel was requested,
+  but CjyxExecutionModel it depends on the JSONCPP component.
+  Make sure CjyxExecutionModel_USE_JSONCPP is ON.")
+endif()
+
+# CjyxExecutionModel_USE_UTF8 is optional and it must be turned on at
+# build time to make sure active code page is consistent in all executables.
+set(CjyxExecutionModel_USE_UTF8 @CjyxExecutionModel_USE_UTF8@)
+
+# Set CjyxExecutionModel variables
+set(CjyxExecutionModel_INCLUDE_DIRS
+  "@CjyxExecutionModel_INCLUDE_DIRS_CONFIG@"
+  )
+set(CjyxExecutionModel_LIBRARIES
+  @CjyxExecutionModel_LIBRARIES_CONFIG@
+  )
+set(DEFAULT_SEM_TARGET_LIBRARIES
+  @DEFAULT_SEM_TARGET_LIBRARIES_CONFIG@
+  )
+set(CjyxExecutionModel_USE_FILE
+  "@CjyxExecutionModel_USE_FILE_CONFIG@"
+  )
+set(CjyxExecutionModel_CMAKE_DIR ${CjyxExecutionModel_DIR}/CMake)
+
+# If not already defined, set default "output directories" used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY)
+  set(CjyxExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
+    "@CjyxExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY)
+  set(CjyxExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
+    "@CjyxExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY)
+  set(CjyxExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
+    "@CjyxExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+# If not already defined, set default "install destination" used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION)
+  set(CjyxExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION
+    "@CjyxExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION)
+  set(CjyxExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION
+    "@CjyxExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION)
+  set(CjyxExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION
+    "@CjyxExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION_CONFIG@"
+    )
+endif()
+
+# If not already defined, set rpath flags used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS)
+  set(CjyxExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS
+    "@CjyxExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS@"
+    )
+endif()
+
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS)
+  set(CjyxExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS
+    "@CjyxExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS@"
+    )
+endif()
+
+# If not already defined, set default library wrapper used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX)
+  set(CjyxExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX
+    "@CjyxExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX_CONFIG@"
+    )
+endif()
+
+# If not already defined, set default "cli targets folder prefix" used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED CjyxExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX)
+  set(CjyxExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX
+    "@CjyxExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX_CONFIG@"
+    )
+endif()
+
+# The CjyxExecutionModel targets file.
+if(NOT TARGET GenerateCLP AND EXISTS "@CjyxExecutionModel_EXPORT_FILE@")
+  include("@CjyxExecutionModel_EXPORT_FILE@")
+endif()
+
+# Set *_DIR variable so that find_package() works appropriately
+set(ModuleDescriptionParser_DIR ${CjyxExecutionModel_DIR}/ModuleDescriptionParser)
+set(GenerateCLP_DIR ${CjyxExecutionModel_DIR}/GenerateCLP)
+set(TCLAP_DIR ${CjyxExecutionModel_DIR}/tclap)
+
+set(CjyxExecutionModel_JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+if(NOT "${CjyxExecutionModel_JsonCpp_INCLUDE_DIR}" STREQUAL "")
+  set(JsonCpp_INCLUDE_DIR ${CjyxExecutionModel_JsonCpp_INCLUDE_DIR})
+endif()
+
+set(CjyxExecutionModel_JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
+if(NOT "${CjyxExecutionModel_JsonCpp_LIBRARY}" STREQUAL "")
+  set(JsonCpp_LIBRARY ${CjyxExecutionModel_JsonCpp_LIBRARY})
+endif()
+
+set(CjyxExecutionModel_ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+if(NOT "${CjyxExecutionModel_ParameterSerializer_DIR}" STREQUAL "")
+  set(ParameterSerializer_DIR ${CjyxExecutionModel_ParameterSerializer_DIR})
+endif()
+
+#
+# Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated
+# variables (ModuleDescriptionParser_INCLUDE_DIRS, ...) are exposed.
+#
+if(CjyxExecutionModel_USE_MODULEDESCRIPTIONPARSER)
+  find_package(ModuleDescriptionParser REQUIRED)
+endif()
+
+if(CjyxExecutionModel_USE_GENERATECLP)
+  find_package(GenerateCLP REQUIRED)
+endif()
+
+if(CjyxExecutionModel_USE_TCLAP)
+  find_package(TCLAP REQUIRED)
+endif()
+
+if(CjyxExecutionModel_USE_JSONCPP)
+  # Add FindJsonCpp.cmake to module path
+  set(CMAKE_MODULE_PATH ${CjyxExecutionModel_CMAKE_DIR} ${CMAKE_MODULE_PATH})
+  find_package(JsonCpp REQUIRED)
+
+  if(WIN32)
+    add_definitions(-DJSON_DLL)
+  endif()
+endif()
+
+if(CjyxExecutionModel_USE_SERIALIZER)
+  find_package(ParameterSerializer REQUIRED)
+endif()
+
+set(_extra_config_file "@CjyxExecutionModel_EXTRA_CONFIG_FILE@")
+if(_extra_config_file)
+  include(${_extra_config_file})
+endif()
+
+set(CjyxExecutionModel_LIBRARY_DIRS
+  "@CjyxExecutionModel_LIBRARY_DIRS_CONFIG@"
+  ${GenerateCLP_LIBRARY_DIRS}
+  ${ModuleDescriptionParser_LIBRARY_DIRS}
+  ${TCLAP_LIBRARY_DIRS}
+  )
