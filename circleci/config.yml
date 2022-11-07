@@ -1,0 +1,23 @@
+build-settings: &build-settings
+  working_directory: /usr/src/CjyxExecutionModel
+
+version: 2
+jobs:
+
+  # ITK master
+  itk-master_use_system_libraries-off:
+    <<: *build-settings
+    docker:
+      - image: cjyx/cjyxexecutionmodel:${CIRCLE_JOB}
+    steps:
+      - checkout
+      - run:
+          command: ./test/Docker/test.sh ${CIRCLE_JOB}
+      - run:
+          command: ./test/Docker/test-serializer.sh ${CIRCLE_JOB}
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - itk-master_use_system_libraries-off
